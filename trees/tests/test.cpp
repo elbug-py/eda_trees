@@ -66,6 +66,18 @@ int main(int nargs, char** vargs){
 					std::cout<<"Not a folder\n";
 				}
 			}
+			else if (name.compare("..")==0)
+			{
+				if (curr->getParent()!=nullptr && curr->getParent()->getType()==1)
+				{
+					insert->setParent(curr->getParent());
+					insert->setData(file);
+					curr->getParent()->getChildren()->insertFirst(insert);
+				}
+				else{
+					std::cout<<"Not a folder\n";
+				}
+			}
 			else{
 				std::string path;
 				trees::TreeNode* node = new trees::TreeNode;
@@ -131,6 +143,18 @@ int main(int nargs, char** vargs){
 					insert->setParent(curr);
 					insert->setData(file);
 					curr->getChildren()->insertFirst(insert);
+				}
+				else{
+					std::cout<<"Not a folder\n";
+				}
+			}
+			else if (name.compare("..")==0)
+			{
+				if (curr->getParent()!=nullptr && curr->getParent()->getType()==1)
+				{
+					insert->setParent(curr->getParent());
+					insert->setData(file);
+					curr->getParent()->getChildren()->insertFirst(insert);
 				}
 				else{
 					std::cout<<"Not a folder\n";
@@ -212,6 +236,16 @@ int main(int nargs, char** vargs){
 			if (name.compare(".")==0 || name.compare("")==0)
 			{
 				curr->getChildren()->print();
+			}
+			else if (name.compare("..")==0)
+			{
+				if (curr->getParent()!=nullptr)
+				{
+					curr->getParent()->getChildren()->print();
+				}
+				else{
+					std::cout<<"Path error\n";
+				}
 			}
 			else{
 				std::string path;
@@ -325,6 +359,16 @@ int main(int nargs, char** vargs){
 			{
 				treeSO.traverse_rec(curr, 1);
 			}
+			else if (name.compare("..")==0)
+			{
+				if (curr->getParent()!=nullptr)
+				{
+					treeSO.traverse_rec(curr->getParent(), 1);
+				}
+				else{
+					std::cout<<"Path error\n";
+				}
+			}
 			else{
 				std::string path;
 				trees::TreeNode* node = new trees::TreeNode;
@@ -368,11 +412,20 @@ int main(int nargs, char** vargs){
 		}
 		else if (op.compare("find")==0)
 		{
-			//TODO: IMPLEMENT THIS
 			trees::TreeNode* node = curr;
 			if (name.compare(".")==0)
 			{
 				treeSO.traverse_find(node, node,file);
+			}
+			else if (name.compare("..")==0)
+			{
+				if (curr->getParent()!=nullptr)
+				{
+					treeSO.traverse_find(curr->getParent(),curr->getParent(), file);
+				}
+				else{
+					std::cout<<"Path error\n";
+				}
 			}
 			else{
 				std::string path;
