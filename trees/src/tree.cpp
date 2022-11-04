@@ -71,6 +71,36 @@ void Tree::traverse_rec(TreeNode* node, int level){
 	}
 }
 
+void Tree::traverse_find(TreeNode* root, TreeNode* node, std::string val){
+	if (node != nullptr){
+		if(node->getData().compare(val)==0){
+			std::cout<<path(root, node);
+			std::cout<<node->getData() <<std::endl;
+		}
+		
+		TreeList* childrenList = node->getChildren();
+		TreeListNode* ptr = childrenList->getHead();
+		while (ptr!=nullptr){
+			traverse_find(root, ptr->getData(), val);
+			ptr = ptr->getNext();
+		}
+	}
+}
+
+std::string Tree::path(TreeNode* root, TreeNode* start){
+	std::string result="";
+	TreeNode* node = start;
+	while (node != root)
+	{
+		if(node->getParent()!=nullptr){
+			node = node->getParent();
+			result = node->getData()+"/"+result;
+		}
+	}
+	return result;
+	
+}
+
 void Tree::traverse(){
 	traverse_rec(root, 1);
 }

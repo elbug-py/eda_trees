@@ -42,15 +42,29 @@ int main(int nargs, char** vargs){
 			insert->setType(1);
 			if (file.compare("")==0)
 			{
-				insert->setParent(curr);
-				insert->setData(name);
-				curr->getChildren()->insertFirst(insert);
+				if (curr->getType()==1)
+				{
+					insert->setParent(curr);
+					insert->setData(name);
+					curr->getChildren()->insertFirst(insert);
+				}
+				else{
+					std::cout<<"Not a folder\n";
+				}
+				
+				
 			}
 			else if (name.compare(".")==0)
 			{
-				insert->setParent(curr);
-				insert->setData(file);
-				treeSO.insert(insert, curr);
+				if (curr->getType()==1)
+				{
+					insert->setParent(curr);
+					insert->setData(file);
+					curr->getChildren()->insertFirst(insert);
+				}
+				else{
+					std::cout<<"Not a folder\n";
+				}
 			}
 			else{
 				std::string path;
@@ -75,11 +89,20 @@ int main(int nargs, char** vargs){
 						}
 					}
 				}
-				if (node != nullptr)
+
+				if (node->getChildren()!= nullptr && node->getChildren()->find(path)!=nullptr)
+						{
+							node = node->getChildren()->find(path);
+						}
+				else{
+					node = nullptr;
+					}
+
+				if (node != nullptr && node->getType()==1)
 				{
 					insert->setParent(node);
 					insert->setData(file);
-					treeSO.insert(insert, node);
+					node->getChildren()->insertFirst(insert);
 				}
 				else{
 					std::cout<<"Path Error"<<std::endl;
@@ -91,15 +114,27 @@ int main(int nargs, char** vargs){
 			trees::TreeNode* insert = new trees::TreeNode();
 			insert->setType(0);
 			if (file.compare("")==0){
-				insert->setParent(curr);
-				insert->setData(name);
-				treeSO.insert(insert, curr);
+				if (curr->getType()==1)
+				{
+					insert->setParent(curr);
+					insert->setData(name);
+					curr->getChildren()->insertFirst(insert);
+				}
+				else{
+					std::cout<<"Not a folder\n";
+				}
 			}
 			else if (name.compare(".")==0)
 			{
-				insert->setParent(curr);
-				insert->setData(file);
-				treeSO.insert(insert, curr);
+				if (curr->getType()==1)
+				{
+					insert->setParent(curr);
+					insert->setData(file);
+					curr->getChildren()->insertFirst(insert);
+				}
+				else{
+					std::cout<<"Not a folder\n";
+				}
 			}
 			else{
 				std::string path;
@@ -124,11 +159,21 @@ int main(int nargs, char** vargs){
 						}
 					}
 				}
-				if (node != nullptr)
+				
+				if (node->getChildren()!= nullptr && node->getChildren()->find(path)!=nullptr)
+						{
+							node = node->getChildren()->find(path);
+						}
+				else{
+					node = nullptr;
+					}
+
+				if (node != nullptr && node->getType()==1)
 				{
+					
 					insert->setParent(node);
 					insert->setData(file);
-					treeSO.insert(insert, node);
+					node->getChildren()->insertFirst(insert);
 				}
 				else{
 					std::cout<<"Path Error"<<std::endl;
@@ -191,6 +236,15 @@ int main(int nargs, char** vargs){
 						}
 					}
 				}
+
+				if (node->getChildren()!= nullptr && node->getChildren()->find(path)!=nullptr)
+						{
+							node = node->getChildren()->find(path);
+						}
+				else{
+					node = nullptr;
+					}
+
 				if (node != nullptr)
 				{
 					node->getChildren()->print();
@@ -206,7 +260,6 @@ int main(int nargs, char** vargs){
 			trees::TreeNode* node = curr;
 			//trees::TreeList* children = node->getChildren();
 			trees::TreeNode* parent = node->getParent();
-			//WHERE THE F*CK IS THE PARENT???
 			//update: turns out none of the nodes had a parent set
 			//so "cd .." never worked
 
@@ -241,6 +294,18 @@ int main(int nargs, char** vargs){
 						}
 					}
 				}
+
+				if (node->getChildren()!= nullptr && node->getChildren()->find(path)!=nullptr)
+						{
+							node = node->getChildren()->find(path);
+							pathReal += path;
+							pathReal += "/";
+							path="";
+						}
+				else{
+					node = nullptr;
+					}
+
 				if (node != nullptr)
 				{
 					curr=node;
@@ -250,27 +315,15 @@ int main(int nargs, char** vargs){
 					std::cout<<"Path Error"<<std::endl;
 				}
 			}
-			
-			
 		}
 		else if (op.compare("tree")==0)
-		{	if(name.compare(".")!=0){
-				trees::TreeNode* node = curr->getChildren()->find(name);
+		{	if(name.compare("")==0){
+				trees::TreeNode* node = curr;
 				treeSO.traverse_rec(node,1);
 			}
 			else if (name.compare(".")==0)
 			{
 				treeSO.traverse_rec(curr, 1);
-			}
-			
-		}
-		else if (op.compare("find")==0)
-		{
-			//TODO: IMPLEMENT THIS
-			trees::TreeNode* node = curr;
-			if (name.compare(".")==0)
-			{
-				//implement
 			}
 			else{
 				std::string path;
@@ -295,17 +348,73 @@ int main(int nargs, char** vargs){
 						}
 					}
 				}
+
+				if (node->getChildren()!= nullptr && node->getChildren()->find(path)!=nullptr)
+						{
+							node = node->getChildren()->find(path);
+						}
+				else{
+					node = nullptr;
+					}
+
 				if (node != nullptr)
 				{
-					//implement
+					treeSO.traverse_rec(node, 1);
 				}
 				else{
 					std::cout<<"Path Error"<<std::endl;
 				}
 			}
 		}
-		
-		
+		else if (op.compare("find")==0)
+		{
+			//TODO: IMPLEMENT THIS
+			trees::TreeNode* node = curr;
+			if (name.compare(".")==0)
+			{
+				treeSO.traverse_find(node, node,file);
+			}
+			else{
+				std::string path;
+				trees::TreeNode* node = new trees::TreeNode;
+				node=curr;
+				int i = 1;
+				for (;i < name.length(); i++)
+				{
+					if (name[i]!='/')
+					{
+						path += name[i];
+					}
+					else{
+						if (node->getChildren()!= nullptr && node->getChildren()->find(path)!=nullptr)
+						{
+							node = node->getChildren()->find(path);
+							path="";
+						}
+						else{
+							node = nullptr;
+							break;
+						}
+					}
+				}
+
+				if (node->getChildren()!= nullptr && node->getChildren()->find(path)!=nullptr)
+						{
+							node = node->getChildren()->find(path);
+						}
+				else{
+					node = nullptr;
+					}
+				
+				if (node != nullptr)
+				{
+					treeSO.traverse_find(node,node,file);
+				}
+				else{
+					std::cout<<"Path Error"<<std::endl;
+				}
+			}
+		}
 	}
 	
 	
